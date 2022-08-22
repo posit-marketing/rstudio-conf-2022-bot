@@ -1,1 +1,5 @@
-# rstudio-conf-2022-bot
+# Automate a Twitter bot with {rtweet} and RStudio Connect
+
+This repository includes an example of automating a Twitter bot using {rtweet} and [RStudio Connect](https://www.rstudio.com/products/connect/).
+
+![RStudio Connect deployed R Markdown document with scheduling options listed on the side. The document is set to rerun every 1 minute.](image2.png)
