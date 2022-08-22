@@ -51,7 +51,7 @@ cleaned_dat <-
 
 filtered_dat <-
   cleaned_dat %>%
-  filter(hour(date) == hour(s2) & minute(date) == minute(s2))
+  filter(date(date) == date(s2) & hour(date) == hour(s2) & minute(date) == minute(s2))
 
 rbot_token <- rtweet::rtweet_bot(
   api_key = Sys.getenv("RBOT_TWITTER_API_KEY"),
