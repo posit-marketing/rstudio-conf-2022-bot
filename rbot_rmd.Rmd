@@ -1,0 +1,72 @@
+---
+title: "Creating a Twitter Bot for rstudio::conf"
+output:
+  html_document:
+    theme:
+      bootswatch: minty
+---
+
+```{r setup}
+#| message = FALSE
+library(rtweet)
+library(readr)
+library(dplyr)
+library(lubridate)
+```
+
+```{r text}
+#| message = FALSE
+dat <-
+  readr::read_csv("tweets.csv")
+
+# Check valid timezone names
+# ?OlsonNames()
+
+s <- Sys.time()
+s2 <- format(s, format = "%F %R %Z", tz = "US/Eastern")
+
+cleaned_dat <-
+  dat %>%
+  dplyr::mutate(
+    # time = format(strptime(start, "%I:%M %p"), format = "%H:%M:%S"),
+    date = lubridate::mdy_hms(paste0(day, ", 2022 ", start, " EDT"),
+                              tz = "US/Eastern"),
+    script =
+      paste0(
+        "Happening now! ",
+        title,
+        ": ",
+        speaker,
+        " ",
+        twitter_name,
+        "\n",
+        "\n",
+        "Stream here: ",
+        "url goes here",
+        "\n",
+        "\n"
+      ),
+    .keep = "unused"
+  )
+
+filtered_dat <-
+  cleaned_dat %>%
+  filter(hour(date) == hour(s2) & minute(date) == minute(s2))
+
+rbot_token <- rtweet::rtweet_bot(
+  api_key = Sys.getenv("RBOT_TWITTER_API_KEY"),
+  api_secret = Sys.getenv("RBOT_TWITTER_API_SECRET"),
+  access_token = Sys.getenv("RBOT_TWITTER_ACCESS_KEY"),
+  access_secret = Sys.getenv("RBOT_TWITTER_ACCESS_SECRET")
+)
+
+if (dim(filtered_dat)[1] > 0) {
+  for (i in 1:dim(dat3)[1]) {
+    rtweet::post_tweet(
+      status = dat3$script[i],
+      media = dat3$image[i],
+      token = rbot_token
+    )
+  }
+}
+```
